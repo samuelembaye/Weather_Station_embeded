@@ -1,56 +1,96 @@
-| Supported Targets | ESP32-C2 | ESP32-C3 | ESP32-C6 | ESP32-H2 | ESP32-P4 | ESP32-S2 | ESP32-S3 |
-| ----------------- | -------- | -------- | -------- | -------- | -------- | -------- | -------- |
+# 🌡️ HTU21 Temperature & Humidity Sensor Example on ESP32-S3-DevKitC-1
 
-# Temperature Sensor Example
+This project demonstrates how to read temperature and humidity data from an **HTU21 sensor** using **I²C** on the **ESP32-S3-DevKitC-1**.
 
-The ESP32-S2/C3/S3/C2 has a built-in temperature sensor. The temperature sensor module contains an 8-bit Sigma-Delta ADC and a temperature offset DAC.
+---
 
-The conversion relationship is the first two columns of the table below. Among them, `offset = 0`(default) is the main measurement option, and other values are extended measurement options.
+## 🧭 Overview
 
-| DAC level | offset | measure range(℃) | measure error(℃) |
-| :-------: | :----: | :--------------: | :--------------: |
-|     0     |   -2   |     50 ~ 125     |       < 3        |
-|     1     |   -1   |     20 ~ 100     |       < 2        |
-|     2     |   0    |     -10 ~ 80     |       < 1        |
-|     3     |   1    |     -30 ~ 50     |       < 2        |
-|     4     |   2    |     -40 ~ 20     |       < 3        |
+The ESP32-S3-DevKitC-1 does **not have a built-in temperature sensor**. This firmware reads data from an external HTU21 sensor over I²C and outputs the readings via UART to a host machine for monitoring or further processing.
 
-## How to use example
+---
 
-Before project configuration and build, be sure to set the correct chip target using `idf.py set-target <chip_name>`.
+## 🛠 Hardware Required
 
-### Hardware Required
+* **ESP32-S3-DevKitC-1** development board  
+* **HTU21 temperature & humidity sensor**  
+* Connecting wires (SDA, SCL, VCC, GND)  
+* USB cable for power and programming  
 
-* A development board with ESP32-S2/C3/S3/C2 SoC (e.g., ESP32-S2-Saola-1, ESP32-S2-DevKitM-1, ESP32-C3-DevKitM-1, ESP32-S3-WROOM-1, etc.)
-* A USB cable for power supply and programming
+**I²C Connection Example:**
 
-### Build and Flash
+| HTU21 Pin | ESP32-S3 Pin |
+|------------|--------------|
+| VCC        | 3.3V         |
+| GND        | GND          |
+| SDA        | GPIO21       |
+| SCL        | GPIO22       |
 
-Build the project and flash it to the board, then run monitor tool to view serial output:
+> Adjust GPIO pins if needed in your code.
 
-Run `idf.py -p PORT flash monitor` to build, flash and monitor the project.
+---
 
-(To exit the serial monitor, type ``Ctrl-]``.)
+## ⚙️ Firmware Features
 
-See the [Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/get-started/index.html) for full steps to configure and use ESP-IDF to build projects.
+- Reads temperature (℃) and humidity (%) from HTU21 sensor  
+- Sends structured data over UART  
+- Supports periodic readings for real-time monitoring  
+- Compatible with ESP32-S3-DevKitC-1  
 
-## Example Output
+---
 
-```
-I (0) cpu_start: Starting scheduler on APP CPU.
-I (303) example: Install temperature sensor, expected temp ranger range: 10~50 ℃
-I (303) temperature_sensor: Range [-10°C ~ 80°C], error < 1°C
-I (313) example: Enable temperature sensor
-I (323) example: Read temperature
-I (323) example: Temperature value 26.06 ℃
-I (1323) example: Temperature value 26.06 ℃
-I (2323) example: Temperature value 26.06 ℃
-I (3323) example: Temperature value 26.06 ℃
-I (4323) example: Temperature value 26.06 ℃
-I (5323) example: Temperature value 26.49 ℃
+## 🚀 Getting Started
 
-```
+### 1️⃣ Set Target Chip
 
-## Troubleshooting
+Before building, make sure the correct ESP32 target is set:
 
-For any technical queries, please open an [issue](https://github.com/espressif/esp-idf/issues) on GitHub. We will get back to you soon.
+```bash
+idf.py set-target esp32s3
+2️⃣ Build & Flash Firmware
+Connect your ESP32-S3-DevKitC-1 and run:
+
+bash
+Copy code
+idf.py -p PORT flash monitor
+Replaces PORT with your serial port (e.g., /dev/ttyUSB0 or COM3).
+
+The monitor tool will display temperature and humidity readings in real-time.
+
+To exit the monitor, press Ctrl-].
+
+📊 Example Output
+yaml
+Copy code
+I (303) example: HTU21 sensor initialized successfully
+I (313) example: Reading temperature and humidity...
+I (323) example: Temperature: 26.06 ℃, Humidity: 45.2 %
+I (1323) example: Temperature: 26.08 ℃, Humidity: 45.1 %
+I (2323) example: Temperature: 26.10 ℃, Humidity: 45.0 %
+I (3323) example: Temperature: 26.12 ℃, Humidity: 44.9 %
+I (4323) example: Temperature: 26.14 ℃, Humidity: 44.9 %
+🔧 Troubleshooting
+Ensure SDA and SCL pins are correctly connected.
+
+Check that the sensor has power (VCC & GND).
+
+If I²C address conflicts occur, run an I²C scan utility.
+
+Verify serial port selection when using the monitor.
+
+📚 References
+ESP-IDF Getting Started Guide
+
+HTU21 Sensor Datasheet
+
+yaml
+Copy code
+
+---
+
+If you want, I can also **add a simple architecture diagram** showing:
+
+HTU21 → I²C → ESP32-S3-DevKitC-1 → UART → Host PC
+
+vbnet
+Copy code
